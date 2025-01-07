@@ -6,7 +6,7 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -14,7 +14,7 @@ class MyApp extends StatelessWidget {
       title: 'WhatTheHex?!',
       theme: ThemeData(
         primarySwatch: Colors.blue,
-        scaffoldBackgroundColor: Color(0xFFf1f1f1),
+        scaffoldBackgroundColor: const Color(0xFFf1f1f1),
       ),
       home: const ColorPickerPage(),
     );
@@ -22,10 +22,10 @@ class MyApp extends StatelessWidget {
 }
 
 class ColorPickerPage extends StatefulWidget {
-  const ColorPickerPage({Key? key}) : super(key: key);
+  const ColorPickerPage({super.key});
 
   @override
-  _ColorPickerPageState createState() => _ColorPickerPageState();
+  State<ColorPickerPage> createState() => _ColorPickerPageState();
 }
 
 class _ColorPickerPageState extends State<ColorPickerPage> {
@@ -34,9 +34,15 @@ class _ColorPickerPageState extends State<ColorPickerPage> {
   String _colorName = 'Shadow Blue';
 
   @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFFf1f1f1),
+      backgroundColor: const Color(0xFFf1f1f1),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
@@ -50,25 +56,7 @@ class _ColorPickerPageState extends State<ColorPickerPage> {
               const SizedBox(height: 8),
               _buildInputLabel(),
               const SizedBox(height: 16),
-              Container(
-                padding: EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    _buildColorSwatch(),
-                    const SizedBox(height: 16),
-                    _buildColorInfo('RGBA', 'rgba(77, 81, 101, 1)'),
-                    const SizedBox(height: 8),
-                    _buildColorInfo('CSS', '--color-clear-blue: #227BFE;'),
-                    const SizedBox(height: 8),
-                    _buildColorInfo('SCSS', '\$color-clear-blue: #227BFE;'),
-                  ],
-                ),
-              ),
+              _buildColorCard(),
               const SizedBox(height: 16),
               _buildGenerateShadesButton(),
               const Spacer(),
@@ -86,21 +74,28 @@ class _ColorPickerPageState extends State<ColorPickerPage> {
         Container(
           width: 60,
           height: 60,
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
             color: Colors.blue,
             shape: BoxShape.circle,
           ),
-          child: Center(
+          child: const Center(
             child: Text(
               '#',
-              style: TextStyle(color: Colors.white, fontSize: 36, fontWeight: FontWeight.bold),
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 36,
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ),
         ),
         const SizedBox(height: 8),
-        Text(
+        const Text(
           'WhatTheHex?!',
-          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+          style: TextStyle(
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+          ),
         ),
       ],
     );
@@ -118,27 +113,29 @@ class _ColorPickerPageState extends State<ColorPickerPage> {
           Expanded(
             child: TextField(
               controller: _controller,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 border: InputBorder.none,
                 contentPadding: EdgeInsets.symmetric(horizontal: 16),
               ),
               onChanged: (value) {
                 if (value.length == 7 && value.startsWith('#')) {
                   setState(() {
-                    _currentColor = Color(int.parse(value.substring(1, 7), radix: 16) + 0xFF000000);
+                    _currentColor = Color(
+                      int.parse(value.substring(1, 7), radix: 16) + 0xFF000000,
+                    );
                   });
                 }
               },
             ),
           ),
           IconButton(
-            icon: Icon(Icons.copy, color: Colors.grey[900]),
             onPressed: () {
               Clipboard.setData(ClipboardData(text: _controller.text));
               ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('Copied to clipboard')),
+                const SnackBar(content: Text('Copied to clipboard')),
               );
             },
+            icon: Icon(Icons.copy, color: Colors.grey[900]),
           ),
         ],
       ),
@@ -155,6 +152,28 @@ class _ColorPickerPageState extends State<ColorPickerPage> {
           style: TextStyle(color: Colors.grey[900], fontSize: 12),
         ),
       ],
+    );
+  }
+
+  Widget _buildColorCard() {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildColorSwatch(),
+          const SizedBox(height: 16),
+          _buildColorInfo('RGBA', 'rgba(77, 81, 101, 1)'),
+          const SizedBox(height: 8),
+          _buildColorInfo('CSS', '--color-clear-blue: #227BFE;'),
+          const SizedBox(height: 8),
+          _buildColorInfo('SCSS', '\$color-clear-blue: #227BFE;'),
+        ],
+      ),
     );
   }
 
@@ -200,7 +219,7 @@ class _ColorPickerPageState extends State<ColorPickerPage> {
       children: [
         Container(
           width: 60,
-          padding: EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+          padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
           decoration: BoxDecoration(
             color: Colors.grey[200],
             borderRadius: BorderRadius.circular(4),
@@ -214,7 +233,7 @@ class _ColorPickerPageState extends State<ColorPickerPage> {
             ),
           ),
         ),
-        SizedBox(width: 8),
+        const SizedBox(width: 8),
         Expanded(
           child: Text(
             value,
@@ -230,17 +249,6 @@ class _ColorPickerPageState extends State<ColorPickerPage> {
 
   Widget _buildGenerateShadesButton() {
     return ElevatedButton(
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(Icons.copy, color: Colors.white),
-          SizedBox(width: 8),
-          Text(
-            'GENERATE SHADES',
-            style: TextStyle(color: Colors.white),
-          ),
-        ],
-      ),
       style: ElevatedButton.styleFrom(
         backgroundColor: Colors.black,
         padding: const EdgeInsets.symmetric(vertical: 16),
@@ -249,8 +257,22 @@ class _ColorPickerPageState extends State<ColorPickerPage> {
         ),
       ),
       onPressed: () {
-        print('Generate bro!');
+        print('Generate shades!');
       },
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: const [
+          Icon(
+            Icons.refresh,
+            color: Colors.white,
+          ),
+          SizedBox(width: 8),
+          Text(
+            'GENERATE SHADES',
+            style: TextStyle(color: Colors.white),
+          ),
+        ],
+      ),
     );
   }
 
@@ -262,7 +284,11 @@ class _ColorPickerPageState extends State<ColorPickerPage> {
           'Made with ',
           style: TextStyle(color: Colors.grey[900]),
         ),
-        Icon(Icons.favorite, color: Colors.red, size: 16),
+        const Icon(
+          Icons.favorite,
+          color: Colors.red,
+          size: 16,
+        ),
         Text(
           ' by Robinson Honour',
           style: TextStyle(color: Colors.grey[900]),
