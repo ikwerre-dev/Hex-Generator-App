@@ -34,9 +34,37 @@ class _ColorPickerPageState extends State<ColorPickerPage> {
   String _colorName = 'Shadow Blue';
 
   @override
+  void initState() {
+    super.initState();
+    _updateColorFromHex(_controller.text);
+  }
+
+  @override
   void dispose() {
     _controller.dispose();
     super.dispose();
+  }
+
+  void _updateColorFromHex(String hexCode) {
+    if (hexCode.length == 7 && hexCode.startsWith('#')) {
+      setState(() {
+        _currentColor = Color(int.parse(hexCode.substring(1, 7), radix: 16) + 0xFF000000);
+        _colorName = _getColorName(_currentColor);
+      });
+    }
+  }
+
+  String _getColorName(Color color) {
+    // this is just a temp color naming for the test
+    final int r = color.red;
+    final int g = color.green;
+    final int b = color.blue;
+
+    if (r > g && r > b) return 'Reddish';
+    if (g > r && g > b) return 'Greenish';
+    if (b > r && b > g) return 'Bluish';
+    if (r == g && g == b) return 'Grayish';
+    return 'Custom Color';
   }
 
   @override
@@ -117,15 +145,7 @@ class _ColorPickerPageState extends State<ColorPickerPage> {
                 border: InputBorder.none,
                 contentPadding: EdgeInsets.symmetric(horizontal: 16),
               ),
-              onChanged: (value) {
-                if (value.length == 7 && value.startsWith('#')) {
-                  setState(() {
-                    _currentColor = Color(
-                      int.parse(value.substring(1, 7), radix: 16) + 0xFF000000,
-                    );
-                  });
-                }
-              },
+              onChanged: _updateColorFromHex,
             ),
           ),
           IconButton(
@@ -167,11 +187,11 @@ class _ColorPickerPageState extends State<ColorPickerPage> {
         children: [
           _buildColorSwatch(),
           const SizedBox(height: 16),
-          _buildColorInfo('RGBA', 'rgba(77, 81, 101, 1)'),
+          _buildColorInfo('RGBA', 'rgba(${_currentColor.red}, ${_currentColor.green}, ${_currentColor.blue}, 1)'),
           const SizedBox(height: 8),
-          _buildColorInfo('CSS', '--color-clear-blue: #227BFE;'),
+          _buildColorInfo('CSS', '--color-custom: ${_controller.text};'),
           const SizedBox(height: 8),
-          _buildColorInfo('SCSS', '\$color-clear-blue: #227BFE;'),
+          _buildColorInfo('SCSS', '\$color-custom: ${_controller.text};'),
         ],
       ),
     );
