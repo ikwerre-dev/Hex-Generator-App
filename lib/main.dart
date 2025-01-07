@@ -29,8 +29,7 @@ class ColorPickerPage extends StatefulWidget {
 }
 
 class _ColorPickerPageState extends State<ColorPickerPage> {
-  final TextEditingController _controller =
-      TextEditingController(text: '#227BFE');
+  final TextEditingController _controller = TextEditingController(text: '#227BFE');
   Color _currentColor = const Color(0xFF227BFE);
   String _colorName = 'Shadow Blue';
 
@@ -94,10 +93,7 @@ class _ColorPickerPageState extends State<ColorPickerPage> {
           child: Center(
             child: Text(
               '#',
-              style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 36,
-                  fontWeight: FontWeight.bold),
+              style: TextStyle(color: Colors.white, fontSize: 36, fontWeight: FontWeight.bold),
             ),
           ),
         ),
@@ -129,9 +125,7 @@ class _ColorPickerPageState extends State<ColorPickerPage> {
               onChanged: (value) {
                 if (value.length == 7 && value.startsWith('#')) {
                   setState(() {
-                    _currentColor = Color(
-                        int.parse(value.substring(1, 7), radix: 16) +
-                            0xFF000000);
+                    _currentColor = Color(int.parse(value.substring(1, 7), radix: 16) + 0xFF000000);
                   });
                 }
               },
@@ -202,44 +196,50 @@ class _ColorPickerPageState extends State<ColorPickerPage> {
   }
 
   Widget _buildColorInfo(String label, String value) {
-    return Container(
-      padding: EdgeInsets.symmetric(vertical: 8, horizontal: 12),
-      decoration: BoxDecoration(
-        color: Colors.grey[200],
-        borderRadius: BorderRadius.circular(4),
-      ),
-      child: Row(
-        children: [
-          SizedBox(
-            width: 60,
-            child: Text(
-              label,
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 12,
-                color: Colors.grey[900],
-              ),
+    return Row(
+      children: [
+        Container(
+          width: 60,
+          padding: EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+          decoration: BoxDecoration(
+            color: Colors.grey[200],
+            borderRadius: BorderRadius.circular(4),
+          ),
+          child: Text(
+            label,
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 12,
+              color: Colors.grey[900],
             ),
           ),
-          Expanded(
-            child: Text(
-              value,
-              style: TextStyle(
-                fontSize: 12,
-                color: Colors.grey[900],
-              ),
+        ),
+        SizedBox(width: 8),
+        Expanded(
+          child: Text(
+            value,
+            style: TextStyle(
+              fontSize: 12,
+              color: Colors.grey[900],
             ),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 
   Widget _buildGenerateShadesButton() {
     return ElevatedButton(
-      child: Text(
-        'GENERATE SHADES',
-        style: TextStyle(color: Colors.white),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(Icons.copy, color: Colors.white),
+          SizedBox(width: 8),
+          Text(
+            'GENERATE SHADES',
+            style: TextStyle(color: Colors.white),
+          ),
+        ],
       ),
       style: ElevatedButton.styleFrom(
         backgroundColor: Colors.black,
@@ -271,3 +271,4 @@ class _ColorPickerPageState extends State<ColorPickerPage> {
     );
   }
 }
+
